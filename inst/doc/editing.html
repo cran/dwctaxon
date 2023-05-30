@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Editing DwC taxon data</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Editing DwC taxon data</h1>
+
+
+
+<p>dwctaxon has two major purposes, (1) editing and (2) validation of
+taxonomic data in <a href="https://dwc.tdwg.org/terms/#taxon">Darwin
+Core (DwC)</a> format. This vignette is about the former. Although you
+could use dwctaxon to build a taxonomic database from scratch, it is
+more likely you will be using it to modify an existing database, so we
+will focus on that kind of use-case.</p>
+<p>We start by loading packages needed for this vignette:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dwctaxon)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble) <span class="co"># recommended for pretty-printing of tibbles</span></span></code></pre></div>
+<div id="the-data" class="section level2">
+<h2>The data</h2>
+<p>dwctaxon comes with an example dataset <code>dct_filmies</code>,
+taxonomic data of filmy ferns (<a href="https://en.wikipedia.org/wiki/Hymenophyllaceae">family
+Hymenophyllaceae</a>). Let’s take a quick look at the data (you may need
+to scroll to the right of the frame with the code to see all the
+text):</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>dct_filmies</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2,451 × 5</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    taxonID  acceptedNameUsageID taxonomicStatus taxonRank scientificName                            </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;     &lt;chr&gt;                                     </span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 54115096 &lt;NA&gt;                accepted        species   Cephalomanes atrovirens Presl             </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 54133783 54115097            synonym         species   Trichomanes crassum Copel.                </span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 54115097 &lt;NA&gt;                accepted        species   Cephalomanes crassum (Copel.) M. G. Price </span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 54133784 54115098            synonym         species   Trichomanes densinervium Copel.           </span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 54115098 &lt;NA&gt;                accepted        species   Cephalomanes densinervium (Copel.) Copel. </span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 54133786 54115100            synonym         species   Cephalomanes curvatum (J. Sm.) V. D. Bosch</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 54133787 54115100            synonym         species   Cephalomanes javanica (Bl.) V. D. Bosch   </span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 54133788 54115100            synonym         species   Cephalomanes oblongifolium Presl          </span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 54133789 54115100            synonym         species   Cephalomanes zollingeri V. D. Bosch       </span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 54133790 54115100            synonym         species   Lacostea javanica (Bl.) Prantl            </span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 2,441 more rows</span></span></code></pre></div>
+<p>For demonstration purposes, we will just use the first five rows:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>filmies_small <span class="ot">&lt;-</span> <span class="fu">head</span>(dct_filmies, <span class="dv">5</span>)</span></code></pre></div>
+<p>Although DwC taxon format includes a large number of terms
+(columns)<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, a typical database does not use all of
+them. <code>dct_filmies</code> only includes 5 columns. Their usage
+should be clear to most biologists, but two columns need more
+explanation. <code>taxonID</code> is a unique ID for each row (name),
+and <code>acceptedNameUsageID</code> is only provided for synonyms; it
+indicates the <code>taxonID</code> of the accepted name. For more
+information on DwC taxon format, see
+<code>vignette(&quot;what-is-dwc&quot;)</code>.</p>
+<p>The rest of the vignette will consist of modifying this dataset.</p>
+</div>
+<div id="adding-rows" class="section level2">
+<h2>Adding rows</h2>
+<div id="adding-rows-by-vector" class="section level3">
+<h3>Adding rows by vector</h3>
+<p><code>dct_add_row()</code> is used to add rows. The simplest way to
+do this is by specifying the new values as vectors (vectors of length 1
+are recycled):</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>filmies_small <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dct_add_row</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">scientificName =</span> <span class="fu">c</span>(<span class="st">&quot;Homo sapiens&quot;</span>, <span class="st">&quot;Drosophila melanogaster&quot;</span>),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">taxonomicStatus =</span> <span class="st">&quot;accepted&quot;</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">taxonRank =</span> <span class="st">&quot;species&quot;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 7 × 6</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   taxonID                          acceptedNameUsageID taxonomicStatus taxonRank scientificName                            modified         </span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                            &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;     &lt;chr&gt;                                     &lt;chr&gt;            </span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 54115096                         &lt;NA&gt;                accepted        species   Cephalomanes atrovirens Presl             &lt;NA&gt;             </span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 54133783                         54115097            synonym         species   Trichomanes crassum Copel.                &lt;NA&gt;             </span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 54115097                         &lt;NA&gt;                accepted        species   Cephalomanes crassum (Copel.) M. G. Price &lt;NA&gt;             </span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 54133784                         54115098            synonym         species   Trichomanes densinervium Copel.           &lt;NA&gt;             </span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 54115098                         &lt;NA&gt;                accepted        species   Cephalomanes densinervium (Copel.) Copel. &lt;NA&gt;             </span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 be111923a2780f4931ca7fa4ed09a1b9 &lt;NA&gt;                accepted        species   Homo sapiens                              2023-05-30 09:59…</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7 5942a5b04c33f577946e4ccfbe490800 &lt;NA&gt;                accepted        species   Drosophila melanogaster                   2023-05-30 09:59…</span></span></code></pre></div>
+<p>Notice that although we did not specify <code>taxonID</code> or
+<code>modified</code>, these columns are automatically filled by
+default<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>;
+they can be turned off by setting the <code>fill_taxon_id</code> and
+<code>stamp_modified</code> arguments to <code>FALSE</code>.</p>
+<p>The names of the new values should be valid DwC terms. You can see
+the terms available with <code>dct_terms</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dct_terms</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 47 × 2</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    group term               </span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  * &lt;chr&gt; &lt;chr&gt;              </span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 taxon taxonID            </span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 taxon scientificNameID   </span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 taxon acceptedNameUsageID</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 taxon parentNameUsageID  </span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 taxon originalNameUsageID</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 taxon nameAccordingToID  </span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 taxon namePublishedInID  </span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 taxon taxonConceptID     </span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 taxon scientificName     </span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 taxon acceptedNameUsage  </span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 37 more rows</span></span></code></pre></div>
+</div>
+<div id="adding-rows-by-dataframe" class="section level3">
+<h3>Adding rows by dataframe</h3>
+<p>Adding rows with vectors as shown above works well if you only need
+to add a small number of rows. However, this could get unwieldy if you
+have a large number to add. In this case, you can instead add them via a
+dataframe.</p>
+<p>The dataframe should have column names matching valid DwC taxon
+terms:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Let&#39;s add some rows from the original dct_filmies</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>to_add <span class="ot">&lt;-</span> <span class="fu">tail</span>(dct_filmies)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>filmies_small <span class="sc">|&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dct_add_row</span>(<span class="at">new_dat =</span> to_add)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 11 × 6</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    taxonID  acceptedNameUsageID taxonomicStatus taxonRank    scientificName                                              modified           </span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;    &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;        &lt;chr&gt;                                                       &lt;chr&gt;              </span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 54115096 &lt;NA&gt;                accepted        species      Cephalomanes atrovirens Presl                               &lt;NA&gt;               </span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 54133783 54115097            synonym         species      Trichomanes crassum Copel.                                  &lt;NA&gt;               </span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 54115097 &lt;NA&gt;                accepted        species      Cephalomanes crassum (Copel.) M. G. Price                   &lt;NA&gt;               </span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 54133784 54115098            synonym         species      Trichomanes densinervium Copel.                             &lt;NA&gt;               </span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 54115098 &lt;NA&gt;                accepted        species      Cephalomanes densinervium (Copel.) Copel.                   &lt;NA&gt;               </span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 54126747 &lt;NA&gt;                accepted        infraspecies Hymenophyllum myriocarpum var. endiviifolium (Desv.) Stolze 2023-05-30 09:59:0…</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 54135528 54126748            synonym         species      Hymenophyllum nigrescens Liebm.                             2023-05-30 09:59:0…</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 54135530 54126748            synonym         species      Mecodium nigricans (Presl ex Kl.) Copel.                    2023-05-30 09:59:0…</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 54135531 54126748            synonym         species      Sphaerocionium nigricans Presl ex Kl.                       2023-05-30 09:59:0…</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 54126748 &lt;NA&gt;                accepted        infraspecies Hymenophyllum myriocarpum var. nigrescens (Liebm.) Stolze   2023-05-30 09:59:0…</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11 54126749 &lt;NA&gt;                accepted        infraspecies Hymenophyllum trichophyllum var. buesii C. V. Morton        2023-05-30 09:59:0…</span></span></code></pre></div>
+<p>Note that in this case the <code>taxonID</code> already existed in
+the data to add, so it is not generated automatically.</p>
+</div>
+</div>
+<div id="deleting-rows" class="section level2">
+<h2>Deleting rows</h2>
+<p><code>dct_drop_row()</code> drops one or more rows by
+<code>taxonID</code> or <code>scientificName</code>.</p>
+<p>For example, we can exclude the row for <em>Cephalomanes
+atrovirens</em> Presl by either using its <code>scientificName</code>
+(<code>Cephalomanes atrovirens Presl</code>) or its <code>taxonID</code>
+(<code>54115096</code>):</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>filmies_small <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dct_drop_row</span>(<span class="at">scientificName =</span> <span class="st">&quot;Cephalomanes atrovirens Presl&quot;</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 5</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   taxonID  acceptedNameUsageID taxonomicStatus taxonRank scientificName                           </span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;     &lt;chr&gt;                                    </span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 54133783 54115097            synonym         species   Trichomanes crassum Copel.               </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 54115097 &lt;NA&gt;                accepted        species   Cephalomanes crassum (Copel.) M. G. Price</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 54133784 54115098            synonym         species   Trichomanes densinervium Copel.          </span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 54115098 &lt;NA&gt;                accepted        species   Cephalomanes densinervium (Copel.) Copel.</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>filmies_small <span class="sc">|&gt;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dct_drop_row</span>(<span class="at">taxonID =</span> <span class="st">&quot;54115096&quot;</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 5</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   taxonID  acceptedNameUsageID taxonomicStatus taxonRank scientificName                           </span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;     &lt;chr&gt;                                    </span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 54133783 54115097            synonym         species   Trichomanes crassum Copel.               </span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 54115097 &lt;NA&gt;                accepted        species   Cephalomanes crassum (Copel.) M. G. Price</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 54133784 54115098            synonym         species   Trichomanes densinervium Copel.          </span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 54115098 &lt;NA&gt;                accepted        species   Cephalomanes densinervium (Copel.) Copel.</span></span></code></pre></div>
+<p>Since it looks up values by <code>taxonID</code> or
+<code>scientificName</code>, <code>dct_drop_row()</code> requires these
+to be unique and non-missing in the taxonomic database.</p>
+<p>Of course, since the taxonomic database is a dataframe, you could
+also use other subsetting techniques like brackets in base R or
+<code>dplyr::filter()</code> from the tidyverse to delete rows.</p>
+</div>
+<div id="modifying-rows" class="section level2">
+<h2>Modifying rows</h2>
+<div id="identifying-rows-to-modify" class="section level3">
+<h3>Identifying rows to modify</h3>
+<p><code>dct_modify_row()</code> changes the values in an existing
+row.</p>
+<p>Here, it is helpful to reiterate the purpose of the
+<code>taxonID</code> column: it is a unique identifier for each row
+(taxonomic name) in the data. So we will use <code>taxonID</code> to
+identify the row to change, then apply new values using other DwC
+terms.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Change the status of Trichomanes crassum Copel. to &quot;accepted&quot;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>filmies_small <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dct_modify_row</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">taxonID =</span> <span class="st">&quot;54133783&quot;</span>, <span class="co"># taxonID of Trichomanes crassum Copel.</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">taxonomicStatus =</span> <span class="st">&quot;accepted&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 6</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   taxonID  acceptedNameUsageID taxonomicStatus taxonRank scientificName                            modified                  </span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;     &lt;chr&gt;                                     &lt;chr&gt;                     </span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 54115096 &lt;NA&gt;                accepted        species   Cephalomanes atrovirens Presl             &lt;NA&gt;                      </span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 54133783 &lt;NA&gt;                accepted        species   Trichomanes crassum Copel.                2023-05-30 09:59:08.933881</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 54115097 &lt;NA&gt;                accepted        species   Cephalomanes crassum (Copel.) M. G. Price &lt;NA&gt;                      </span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 54133784 54115098            synonym         species   Trichomanes densinervium Copel.           &lt;NA&gt;                      </span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 54115098 &lt;NA&gt;                accepted        species   Cephalomanes densinervium (Copel.) Copel. &lt;NA&gt;</span></span></code></pre></div>
+<p>Notice there were some additional automatic changes besides just
+<code>taxonomicStatus</code>. Since the new status is
+<code>&quot;accepted&quot;</code>, dwctaxon automatically set
+<code>acceptedNameUsageID</code> (which indicates the
+<code>taxonID</code> of the accepted name for synonyms) to
+<code>NA</code>. This behavior can be disabled by setting the
+<code>clear_usage_id</code> argument to <code>FALSE</code>. We see the
+<code>modified</code> field has been updated as well.</p>
+<p>However, it can be difficult for humans to keep track of which
+<code>taxonID</code> matches which name; typically, we think in terms of
+species names, not ID numbers. For that reason, you can also use
+<code>scientificName</code> instead of <code>taxon_id</code> to specify
+a row to modify<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Change the status of Trichomanes crassum Copel. to &quot;accepted&quot;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>filmies_small <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dct_modify_row</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">scientificName =</span> <span class="st">&quot;Trichomanes crassum Copel.&quot;</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">taxonomicStatus =</span> <span class="st">&quot;accepted&quot;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 6</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   taxonID  acceptedNameUsageID taxonomicStatus taxonRank scientificName                            modified                  </span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;     &lt;chr&gt;                                     &lt;chr&gt;                     </span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 54115096 &lt;NA&gt;                accepted        species   Cephalomanes atrovirens Presl             &lt;NA&gt;                      </span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 54133783 &lt;NA&gt;                accepted        species   Trichomanes crassum Copel.                2023-05-30 09:59:08.983517</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 54115097 &lt;NA&gt;                accepted        species   Cephalomanes crassum (Copel.) M. G. Price &lt;NA&gt;                      </span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 54133784 54115098            synonym         species   Trichomanes densinervium Copel.           &lt;NA&gt;                      </span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 54115098 &lt;NA&gt;                accepted        species   Cephalomanes densinervium (Copel.) Copel. &lt;NA&gt;</span></span></code></pre></div>
+<p>If you provide <strong>both</strong> <code>taxonID</code> and
+<code>scientificName</code>, dwctaxon will identify the row with
+<code>taxonID</code> and apply <code>scientificName</code> as the new
+scientific name:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Change the name of Trichomanes crassum Copel.</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>filmies_small <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dct_modify_row</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">taxonID =</span> <span class="st">&quot;54133783&quot;</span>, <span class="co"># taxonID of Trichomanes crassum Copel.</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">scientificName =</span> <span class="st">&quot;Bogus name&quot;</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 6</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   taxonID  acceptedNameUsageID taxonomicStatus taxonRank scientificName                            modified                 </span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;     &lt;chr&gt;                                     &lt;chr&gt;                    </span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 54115096 &lt;NA&gt;                accepted        species   Cephalomanes atrovirens Presl             &lt;NA&gt;                     </span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 54133783 54115097            synonym         species   Bogus name                                2023-05-30 09:59:09.01422</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 54115097 &lt;NA&gt;                accepted        species   Cephalomanes crassum (Copel.) M. G. Price &lt;NA&gt;                     </span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 54133784 54115098            synonym         species   Trichomanes densinervium Copel.           &lt;NA&gt;                     </span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 54115098 &lt;NA&gt;                accepted        species   Cephalomanes densinervium (Copel.) Copel. &lt;NA&gt;</span></span></code></pre></div>
+</div>
+<div id="automatic-re-mapping-of-synonyms" class="section level3">
+<h3>Automatic re-mapping of synonyms</h3>
+<p>Another convenient automated behavior of dwctaxon is the ability to
+“re-map” synonyms. That is, if a previously accepted name (say, “A”) is
+changed to be the synonym of another name (say, “B”), all synonyms of
+“A” are also changed to be synonyms of “B”. Let’s see how this works
+with the example data:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Change C. densinervium to a synonym of C. crassum</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>filmies_small <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dct_modify_row</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">scientificName =</span> <span class="st">&quot;Cephalomanes densinervium (Copel.) Copel.&quot;</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">taxonomicStatus =</span> <span class="st">&quot;synonym&quot;</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">acceptedNameUsage =</span> <span class="st">&quot;Cephalomanes crassum (Copel.) M. G. Price&quot;</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 6</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   taxonID  acceptedNameUsageID taxonomicStatus taxonRank scientificName                            modified                  </span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;     &lt;chr&gt;                                     &lt;chr&gt;                     </span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 54115096 &lt;NA&gt;                accepted        species   Cephalomanes atrovirens Presl             &lt;NA&gt;                      </span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 54133783 54115097            synonym         species   Trichomanes crassum Copel.                &lt;NA&gt;                      </span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 54115097 &lt;NA&gt;                accepted        species   Cephalomanes crassum (Copel.) M. G. Price &lt;NA&gt;                      </span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 54133784 54115097            synonym         species   Trichomanes densinervium Copel.           2023-05-30 09:59:09.073492</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 54115098 54115097            synonym         species   Cephalomanes densinervium (Copel.) Copel. 2023-05-30 09:59:09.048143</span></span></code></pre></div>
+<p>Notice that <strong>two</strong> names were modified even though we
+only specified one; since <em>Trichomanes densinervium</em> Copel. was a
+synonym of <em>Cephalomanes densinervium</em> (Copel.) Copel., it also
+gets <strong>re-mapped</strong> to the accepted name <em>Cephalomanes
+crassum</em> (Copel.) M. G. Price</p>
+</div>
+</div>
+<div id="filling-columns" class="section level2">
+<h2>Filling columns</h2>
+<p>As described in <code>vignette(&quot;what-is-dwc&quot;)</code>, there are
+several terms in DwC that I call “term - termID” pairs, e.g.,
+<code>acceptedNameUsage</code> and <code>acceptedNameUsageID</code>,
+<code>parentNameUsage</code> and <code>parentNameUsageID</code>, etc.
+Typically, one is an actual scientific name (e.g., for
+<code>acceptedNameUsage</code>, the accepted name of a synonym), and one
+is the <code>taxonID</code> of that name (e.g., for
+<code>acceptedNameUsageID</code>, the <code>taxonID</code> of the
+accepted name of a synonym). It is up to the manager of the database to
+choose whether to use either or both of the terms in the pair.</p>
+<p>This sort of data is redundant and could be prone to error if entered
+manually, so dwctaxon can do it for us with <code>dct_fill_col()</code>.
+The easiest way to see how this works is with an example (you may need
+to scroll to the right to see the new column):</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill-in the acceptedNameUsage column with scientific names</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>filmies_small <span class="sc">|&gt;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dct_fill_col</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill_to =</span> <span class="st">&quot;acceptedNameUsage&quot;</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill_from =</span> <span class="st">&quot;scientificName&quot;</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">match_to =</span> <span class="st">&quot;taxonID&quot;</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">match_from =</span> <span class="st">&quot;acceptedNameUsageID&quot;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 7</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   taxonID  acceptedNameUsageID taxonomicStatus taxonRank scientificName                            acceptedNameUsage                modified</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;     &lt;chr&gt;                                     &lt;chr&gt;                            &lt;chr&gt;   </span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 54115096 &lt;NA&gt;                accepted        species   Cephalomanes atrovirens Presl             &lt;NA&gt;                             2023-05…</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 54133783 54115097            synonym         species   Trichomanes crassum Copel.                Cephalomanes crassum (Copel.) M… 2023-05…</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 54115097 &lt;NA&gt;                accepted        species   Cephalomanes crassum (Copel.) M. G. Price &lt;NA&gt;                             2023-05…</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 54133784 54115098            synonym         species   Trichomanes densinervium Copel.           Cephalomanes densinervium (Cope… 2023-05…</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 54115098 &lt;NA&gt;                accepted        species   Cephalomanes densinervium (Copel.) Copel. &lt;NA&gt;                             2023-05…</span></span></code></pre></div>
+<p>The meaning of the arguments <code>fill_to</code> and
+<code>fill_from</code> I think are fairly clear: we are filling the
+<code>acceptedNameUsage</code> column with values from
+<code>scientificName</code>.</p>
+<p><code>match_to</code> and <code>match_from</code> are a bit trickier;
+they describe <em>how</em> to find the data for filling. Here, we are
+looking up <code>acceptedNameUsage</code> by matching
+<code>acceptedNameUsageID</code> (<code>match_from</code>) to
+<code>taxonID</code> (<code>match_to</code>).</p>
+<p>Like I said, it’s easiest to figure out <code>dct_fill_col()</code>
+by trying it yourself.</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>See <code>dct_terms</code> for a list<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><code>taxonID</code> is filled with the <a href="https://en.wikipedia.org/wiki/Hash_function">md5 hash</a> of the
+scientific name. By default, the hash is 32 characters long, so
+automatically generated values of <code>taxonID</code> should be unique
+if the scientific names are unique. This can be checked by running
+<code>dct_validate()</code>.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>This only works if the scientific name is unique within
+the dataset<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
