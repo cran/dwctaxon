@@ -287,3 +287,38 @@ is_unique <- function(x, allow_na = TRUE) {
   }
   !any(duplicated(x))
 }
+
+#' Is the zip file used in real-data.Rmd OK to download?
+#'
+#' @param url Character vector of length 1; URL pointing to zip file to
+#' download ie "https://data.canadensys.net/ipt/archive.do?r=vascan&v=37.12"
+#' @param online Logical vector of length 1; is this computer connected to the
+#' internet? Defaults to curl::has_internet(), but provided for testing
+#' purposes.
+#'
+#' @return Logical vector of length 1.
+#' @noRd
+#' @autoglobal
+safe_to_download <- function(url, online = curl::has_internet()) {
+  get_safely <- purrr::safely(httr::GET)
+  # Check for internet connection
+  if (!online) {
+    return(FALSE)
+  }
+  # Check for functioning URL
+  dl_check <- get_safely(url)
+  if (!is.null(dl_check$error)) {
+    return(FALSE)
+  }
+  dl_check_result <- unclass(dl_check$result)
+  # Check for client error
+  if (dl_check_result$status_code >= 400) {
+    return(FALSE)
+  }
+  # Check that URL points to a zip file
+  zip_check <- grepl("zip", dl_check_result$headers$`content-type`)
+  if (zip_check == FALSE) {
+    return(FALSE)
+  }
+  TRUE
+}

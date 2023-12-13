@@ -43,12 +43,12 @@ dct_validate(
 
 \item{check_status_diff}{Logical vector of length 1; should each scientific name be allowed to have only one taxonomic status? Default \code{FALSE}.}
 
-\item{check_col_names}{Logical vector of length 1; should all column names be required to be a valid Darwin Core term? Default \code{TRUE}.}
+\item{check_col_names}{Logical vector of length 1; should all column names be required to be a valid DwC term? Default \code{TRUE}.}
 
 \item{valid_tax_status}{Character vector of length 1; valid values for \code{taxonomicStatus}. Each value must be separated by a comma. Default \verb{accepted, synonym, variant, NA}. \code{"NA"} indicates that missing (NA) values are valid. Case-sensitive.}
 
 \item{extra_cols}{Character vector; names of columns that should be allowed beyond
-those defined by the Darwin Core DwC taxon standard. Default NULL. Providing column name(s) that are valid DwC taxon column(s) has no effect.}
+those defined by the DwC taxon standard. Default NULL. Providing column name(s) that are valid DwC taxon column(s) has no effect.}
 
 \item{on_success}{Character vector of length 1, either "logical" or "data". Describes what to do if the check passes. Default \code{"data"}.}
 
@@ -110,11 +110,10 @@ dct_validate(dct_filmies)
 bad_dat <- dct_filmies
 bad_dat$scientificName[1] <- bad_dat$scientificName[2]
 
-# The incorrectly formatted data won't pass (example produces an error, so
-# not run by default)
-\dontrun{
-dct_validate(bad_dat)
-}
+# The incorrectly formatted data won't pass
+try(
+  dct_validate(bad_dat)
+)
 
 # It will pass if we allow duplicated scientific names though
 dct_validate(bad_dat, check_sci_name = FALSE)
@@ -133,5 +132,4 @@ dct_validate(bad_dat)
 
 # Reset options to those before this example was run
 do.call(dct_options, old_settings)
-
 }

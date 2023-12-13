@@ -280,4 +280,38 @@ test_that("check_fill_usage_id_name() works", {
   dct_options(reset = TRUE)
 })
 
+test_that("Check for zip file ready to download works", {
+  # Simulate being offline
+  expect_equal(
+    safe_to_download(vascan_url, online = FALSE),
+    FALSE
+  )
+  # Rest of tests require an internet connection
+  skip_if_offline(host = "r-project.org")
+  # URL used in vignette should work
+  # - load URL
+  source(system.file("extdata", "vascan_url.R", package = "dwctaxon"))
+  expect_equal(
+    safe_to_download(vascan_url),
+    TRUE
+  )
+  # Check for 404
+  expect_equal(
+    safe_to_download(
+      "https://github.com/joelnitta/i_will_never_make_this_repo"),
+    FALSE
+  )
+  # Check for something that is not a zip file
+  expect_equal(
+    safe_to_download("https://data.canadensys.net/"),
+    FALSE
+  )
+  # Check for something that is not a zip file
+  expect_equal(
+    safe_to_download(
+      "https://data.canadensys.net/ipt/archive.do?r=vascan&v=WRONGNUMBER"),
+    FALSE
+  )
+})
+
 dct_options(reset = TRUE)
