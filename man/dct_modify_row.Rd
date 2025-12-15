@@ -15,8 +15,11 @@ dct_modify_row(
   clear_usage_name = dct_options()$clear_usage_name,
   fill_usage_name = dct_options()$fill_usage_name,
   remap_names = dct_options()$remap_names,
+  remap_parent = dct_options()$remap_parent,
   remap_variant = dct_options()$remap_variant,
   stamp_modified = dct_options()$stamp_modified,
+  stamp_modified_by_id = dct_options()$stamp_modified_by_id,
+  stamp_modified_by = dct_options()$stamp_modified_by,
   strict = dct_options()$strict,
   quiet = dct_options()$quiet,
   args_tbl = NULL,
@@ -50,9 +53,21 @@ assign to the selected row.}
 
 \item{remap_names}{Logical vector of length 1; should the acceptedNameUsageID be updated (remapped) for rows with the same acceptedNameUsageID as the taxonID of the row to be modified? Default \code{TRUE}.}
 
+\item{remap_parent}{Logical vector of length 1; should the parentNameUsageID be updated (remapped) to that of its accepted name if it is a synonym? Will also apply to any other rows with the same parentNameUsageID as the taxonID of the row to be modified. Default \code{TRUE}.}
+
 \item{remap_variant}{Same as \code{remap_names}, but applies specifically to rows with taxonomicStatus of "variant". Default \code{FALSE}.}
 
 \item{stamp_modified}{Logical vector of length 1; should the \code{modified} column of any newly created or modified row include a timestamp with the date and time of its creation/modification? If the \code{modified} column does not yet exist it will be created. Default \code{TRUE}.}
+
+\item{stamp_modified_by_id}{Logical vector of length 1; should the \code{modifiedByID} column of any newly created or modified row include the ID of the
+current user? If the \code{modifiedByID} column does not yet exist it will be created; note that
+this is a non-DWC standard column, so \code{"modifiedByID"} is required in
+\code{extra_cols}. The current user ID can be specified with the \code{user_id} option. Default \code{FALSE}.}
+
+\item{stamp_modified_by}{Logical vector of length 1; should the \code{modifiedBy} column of any newly created or modified row include the name of the
+current user? If the \code{modifiedBy} column does not yet exist it will be created; note that
+this is a non-DWC standard column, so \code{"modifiedBy"} is required in
+\code{extra_cols}. The current user can be specified with the \code{user_name} option. Default \code{FALSE}.}
 
 \item{strict}{Logical vector of length 1; should taxonomic checks be run on the updated taxonomic database? Default \code{FALSE}..}
 
@@ -93,9 +108,16 @@ selected row (i.e., they will modify the row).
 If \code{remap_names} is \code{TRUE} (default) and \code{acceptedNameUsageID} is provided,
 any names that have an acceptedNameUsageID matching the taxonID of the
 selected row (i.e., synonyms of that row) will also have their
-acceptedNameUsageID replaced with the new acceptedNameUsageID. This behavior
+acceptedNameUsageID replaced with the new acceptedNameUsageID. This applies
+to \code{acceptedNameUsage} as well. This behavior
 is not applied to names with taxonomicStatus of "variant" by default, but can
 be turned on for such names with \code{remap_variant}.
+
+If \code{remap_parent} is \code{TRUE} (default) and the \code{parentNameUsageID} of the
+selected row is a synonym, the \code{parentNameUsageID} will be changed to
+that of the accepted name (of the parent taxon). This will also apply to any
+other row with the same \code{parentNameUsageID} as the selected row. This applies
+to \code{parentNameUsage} as well.
 
 If \code{clear_usage_id} or \code{clear_usage_name} is \code{TRUE} and \code{taxonomicStatus}
 includes the word "accepted", acceptedNameUsageID

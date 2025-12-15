@@ -52,10 +52,11 @@ test_that(
   "Name remapping works",
   {
     tax_dat <- tribble(
-      ~taxonID, ~acceptedNameUsageID, ~taxonomicStatus, ~scientificName,
-      "1", NA, "accepted", "foo",
-      "2", NA, "accepted", "bar",
-      "3", "2", "synonym", "bat"
+      ~taxonID, ~acceptedNameUsageID, ~acceptedNameUsage,
+      ~taxonomicStatus, ~scientificName,
+      "1", NA, NA, "accepted", "foo",
+      "2", NA, NA, "accepted", "bar",
+      "3", "2", "bar", "synonym", "bat"
     )
     expect_equal(
       dct_modify_row(
@@ -64,10 +65,11 @@ test_that(
         stamp_modified = FALSE
       ),
       tribble(
-        ~taxonID, ~acceptedNameUsageID, ~taxonomicStatus, ~scientificName,
-        "1", NA, "accepted", "foo",
-        "2", "1", "synonym", "bar",
-        "3", "1", "synonym", "bat"
+        ~taxonID, ~acceptedNameUsageID, ~acceptedNameUsage,
+        ~taxonomicStatus, ~scientificName,
+        "1", NA, NA, "accepted", "foo",
+        "2", "1", "foo", "synonym", "bar",
+        "3", "1", "foo", "synonym", "bat"
       )
     )
     expect_equal(
@@ -77,10 +79,11 @@ test_that(
         stamp_modified = FALSE, remap_names = FALSE
       ),
       tribble(
-        ~taxonID, ~acceptedNameUsageID, ~taxonomicStatus, ~scientificName,
-        "1", NA, "accepted", "foo",
-        "2", "1", "synonym", "bar",
-        "3", "2", "synonym", "bat"
+        ~taxonID, ~acceptedNameUsageID,  ~acceptedNameUsage,
+        ~taxonomicStatus, ~scientificName,
+        "1", NA, NA, "accepted", "foo",
+        "2", "1", "foo", "synonym", "bar",
+        "3", "2", "bar", "synonym", "bat"
       )
     )
   }
@@ -570,6 +573,122 @@ test_that("na_to_null() works", {
     NULL
   )
 })
+
+# Stamp modified by ----
+
+test_that("Filling in modifiedBy and modifiedByID works", {
+  dct_options(reset = TRUE)
+  dct_options(
+    user_name = "me", user_id = "123",
+    extra_cols = c("modifiedBy", "modifiedByID"),
+    # Turn off time stamp so snapshot works
+    stamp_modified = FALSE
+  )
+  tax_dat <- tribble(
+    ~taxonID, ~acceptedNameUsageID, ~taxonomicStatus, ~scientificName,
+    "1", NA, "accepted", "foo"
+  )
+  expect_equal(
+    dct_modify_row(
+      tax_dat,
+      scientificName = "foo", taxonomicStatus = "maybe accepted",
+      stamp_modified = FALSE, stamp_modified_by = TRUE,
+      stamp_modified_by_id = TRUE
+    ),
+    tribble(
+      ~taxonID, ~acceptedNameUsageID, ~taxonomicStatus, ~scientificName,
+      ~modifiedBy, ~modifiedByID,
+      "1", NA, "maybe accepted", "foo", "me", "123"
+    )
+  )
+  dct_options(reset = TRUE)
+  # Can also set via dct_options()
+  dct_options(
+    user_name = "me", user_id = "123",
+    extra_cols = c("modifiedBy", "modifiedByID"),
+    stamp_modified = FALSE,
+    stamp_modified_by = TRUE,
+    stamp_modified_by_id = TRUE
+  )
+  expect_equal(
+    dct_modify_row(
+      tax_dat,
+      scientificName = "foo", taxonomicStatus = "maybe accepted",
+      stamp_modified = FALSE, stamp_modified_by = TRUE,
+      stamp_modified_by_id = TRUE
+    ),
+    tribble(
+      ~taxonID, ~acceptedNameUsageID, ~taxonomicStatus, ~scientificName,
+      ~modifiedBy, ~modifiedByID,
+      "1", NA, "maybe accepted", "foo", "me", "123"
+    )
+  )
+  dct_options(reset = TRUE)
+})
+
+test_that("modifiedBy and modifiedByID fail if extra_cols not set properly", {
+  dct_options(reset = TRUE)
+  dct_options(
+    user_name = "me", user_id = "123"
+  )
+  tax_dat <- tribble(
+    ~taxonID, ~acceptedNameUsageID, ~taxonomicStatus, ~scientificName,
+    "1", NA, "accepted", "foo"
+  )
+  expect_error(
+    dct_modify_row(
+      tax_dat,
+      scientificName = "foo", taxonomicStatus = "maybe accepted",
+      stamp_modified_by = TRUE
+    ),
+    "stamp_modified_by requires 'modifiedBy' in extra_cols"
+  )
+  expect_error(
+    dct_modify_row(
+      tax_dat,
+      scientificName = "foo", taxonomicStatus = "maybe accepted",
+      stamp_modified_by_id = TRUE
+    ),
+    "stamp_modified_by_id requires 'modifiedByID' in extra_cols"
+  )
+})
+
+test_that("modifiedBy and modifiedByID fill in for all remapped names", {
+  dct_options(reset = TRUE)
+  dct_options(
+    user_name = "me", user_id = "123",
+    extra_cols = c("modifiedBy", "modifiedByID"),
+    stamp_modified = FALSE,
+    stamp_modified_by = TRUE,
+    stamp_modified_by_id = TRUE
+  )
+  tax_dat <- tribble(
+    ~taxonID, ~acceptedNameUsageID, ~taxonomicStatus, ~scientificName,
+    ~acceptedNameUsage,
+    "1", NA, "accepted", "foo", NA_character_,
+    "2", NA, "accepted", "bar", NA,
+    "3", "2", "synonym", "bat", NA
+  )
+  expect_equal(
+    dct_modify_row(
+      tax_dat,
+      taxonID = "2", taxonomicStatus = "synonym", acceptedNameUsageID = "1",
+      fill_usage_name = TRUE
+    ),
+    tribble(
+      ~taxonID, ~acceptedNameUsageID, ~taxonomicStatus, ~scientificName,
+      ~acceptedNameUsage, ~modifiedBy, ~modifiedByID,
+      "1", NA, "accepted", "foo", NA, NA, NA,
+      "2", "1", "synonym", "bar", "foo", "me", "123",
+      "3", "1", "synonym", "bat", "foo", "me", "123"
+    )
+  )
+  dct_options(reset = TRUE)
+})
+
+# remap_parent
+
+# see test-dct_modify_row-remap_parent.R
 
 # Other tests ----
 

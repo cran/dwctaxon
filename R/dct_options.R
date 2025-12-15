@@ -58,6 +58,7 @@ settings_is_string <- function(..., null_allowed = FALSE) {
 #' - `check_mapping_accepted`: `r param_check_mapping_accepted`
 #' - `check_mapping_original`: `r param_check_mapping_original`
 #' - `check_mapping_parent`: `r param_check_mapping_parent`
+#' - `check_mapping_parent_accepted`: `r param_check_mapping_parent_accepted`
 #' - `check_sci_name`: `r param_check_sci_name`
 #' - `check_status_diff`: `r param_check_status_diff`
 #' - `check_tax_status`: `r param_check_tax_status`
@@ -76,14 +77,19 @@ settings_is_string <- function(..., null_allowed = FALSE) {
 #' - `fill_usage_id`: `r param_fill_usage_id`
 #' - `fill_usage_name`: `r param_fill_usage_name`
 #' - `remap_names`: `r param_remap_names`
+#' - `remap_parent`: `r param_remap_parent`
 #' - `remap_variant`: `r param_remap_variant`
 #' - `stamp_modified`: `r param_stamp_modified`
+#' - `stamp_modified_by`: `r param_stamp_modified_by_name`
+#' - `stamp_modified_by_id`: `r param_stamp_modified_by_id`
 #' - `taxon_id_length`: `r param_taxon_id_length`
 #'
 #' ### General arguments
 #'
 #' - `quiet`: `r param_quiet`
 #' - `strict`: `r param_strict`
+#' - `user_name`: `r param_user_name`
+#' - `user_id`: `r param_user_id`
 #'
 #' @param reset Logical vector of length 1; if TRUE, reset all options to their
 #' default values.
@@ -111,6 +117,7 @@ dct_opts <- settings::options_manager(
   check_tax_status = TRUE,
   check_mapping_accepted = TRUE,
   check_mapping_parent = TRUE,
+  check_mapping_parent_accepted = FALSE,
   check_mapping_original = TRUE,
   check_mapping_accepted_status = FALSE,
   check_sci_name = TRUE,
@@ -129,16 +136,22 @@ dct_opts <- settings::options_manager(
   clear_usage_name = TRUE,
   fill_usage_name = TRUE,
   remap_names = TRUE,
+  remap_parent = TRUE,
   remap_variant = FALSE,
   stamp_modified = TRUE,
+  stamp_modified_by = FALSE,
+  stamp_modified_by_id = FALSE,
   strict = FALSE,
   # general
   quiet = FALSE,
+  user_name = "",
+  user_id = "",
   .allowed = list(
     check_taxon_id = settings::inlist(TRUE, FALSE),
     check_tax_status = settings::inlist(TRUE, FALSE),
     check_mapping_accepted = settings::inlist(TRUE, FALSE),
     check_mapping_parent = settings::inlist(TRUE, FALSE),
+    check_mapping_parent_accepted = settings::inlist(TRUE, FALSE),
     check_mapping_original = settings::inlist(TRUE, FALSE),
     check_mapping_accepted_status = settings::inlist(TRUE, FALSE),
     check_sci_name = settings::inlist(TRUE, FALSE),
@@ -159,7 +172,11 @@ dct_opts <- settings::options_manager(
     remap_variant = settings::inlist(TRUE, FALSE),
     stamp_modified = settings::inlist(TRUE, FALSE),
     strict = settings::inlist(TRUE, FALSE),
-    quiet = settings::inlist(TRUE, FALSE)
+    quiet = settings::inlist(TRUE, FALSE),
+    user_name = settings_is_string(),
+    user_id = settings_is_string(),
+    stamp_modified_by = settings::inlist(TRUE, FALSE),
+    stamp_modified_by_id = settings::inlist(TRUE, FALSE)
   )
 )
 

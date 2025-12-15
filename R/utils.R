@@ -24,11 +24,13 @@ drop_first <- function(x) {
 #' @return TRUE if test is true or `data` if test is false
 #' @noRd
 #' @autoglobal
-assert_that_d <- function(condition,
-                          data,
-                          msg = NULL,
-                          env = parent.frame(),
-                          quiet = FALSE) {
+assert_that_d <- function(
+  condition,
+  data,
+  msg = NULL,
+  env = parent.frame(),
+  quiet = FALSE
+) {
   assert_res <- tryCatch(
     expr = assertthat::assert_that(isTRUE(condition), msg = msg),
     error = function(e) {
@@ -65,8 +67,15 @@ assert_that_d <- function(condition,
 #'
 #' @noRd
 #' @autoglobal
-assert_col <- function(dat, col, class = NULL, req_by = NULL,
-                       on_fail = "error", run = TRUE, quiet = FALSE) {
+assert_col <- function(
+  dat,
+  col,
+  class = NULL,
+  req_by = NULL,
+  on_fail = "error",
+  run = TRUE,
+  quiet = FALSE
+) {
   if (run == FALSE) {
     return(NULL)
   }
@@ -105,7 +114,9 @@ assert_col <- function(dat, col, class = NULL, req_by = NULL,
     # Format error message
     if (length(class) > 2) {
       class_list <- c(
-        class[seq_along(class) - 1], "or", class[length(class)]
+        class[seq_along(class) - 1],
+        "or",
+        class[length(class)]
       )
       class_list <- paste(class_list, collapse = ", ") |>
         gsub("or,", "or", x = _)
@@ -262,7 +273,8 @@ make_taxon_id_from_sci_name_1 <- function(taxon_id, sci_name, max_len = 8) {
 #' @autoglobal
 make_taxon_id_from_sci_name <- function(taxon_id, sci_name, max_len = 8) {
   purrr::map2(
-    taxon_id, sci_name,
+    taxon_id,
+    sci_name,
     ~ make_taxon_id_from_sci_name_1(
       taxon_id = .x,
       sci_name = .y,
@@ -320,5 +332,58 @@ safe_to_download <- function(url, online = curl::has_internet()) {
   if (zip_check == FALSE) {
     return(FALSE)
   }
+  TRUE
+}
+
+#' Download and unzip a file with error handling
+#'
+#' @param url Character vector of length 1; URL pointing to zip file to
+#' download.
+#' @param destfile Character vector of length 1; path where the zip file
+#' should be saved.
+#' @param exdir Character vector of length 1; directory where the zip file
+#' should be extracted.
+#' @param quiet Logical vector of length 1; should messages be suppressed?
+#'
+#' @return Logical vector of length 1; TRUE if successful, FALSE otherwise.
+#' @importFrom utils download.file unzip
+#' @noRd
+#' @autoglobal
+safe_download_unzip <- function(url, destfile, exdir, quiet = FALSE) {
+  # Download data
+  download_result <- try(
+    suppressWarnings(
+      download.file(url = url, destfile = destfile, mode = "wb", quiet = quiet)
+    ),
+    silent = TRUE
+  )
+
+  # Check if download failed
+  if (inherits(download_result, "try-error")) {
+    if (!quiet) {
+      message(
+        paste0(
+          "Failed to download file from ",
+          url
+        )
+      )
+    }
+    return(FALSE)
+  }
+
+  # Unzip
+  unzip_result <- try(
+    unzip(destfile, exdir = exdir),
+    silent = TRUE
+  )
+
+  # Check if unzip failed
+  if (inherits(unzip_result, "try-error")) {
+    if (!quiet) {
+      message("Failed to unzip file.")
+    }
+    return(FALSE)
+  }
+
   TRUE
 }

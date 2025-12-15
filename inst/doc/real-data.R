@@ -7,8 +7,6 @@ knitr::opts_chunk$set(
 # Increase width for printing tibbles
 old <- options(width = 140)
 
-knitr::read_chunk(system.file("extdata", "vascan_url.R", package = "dwctaxon"))
-
 ## ----setup, message = FALSE---------------------------------------------------------------------------------------------------------------
 library(dwctaxon)
 library(readr)
@@ -23,12 +21,14 @@ temp_zip <- paste0(temp_dir, "/dwca-vascan.zip")
 # - Set name of unzipped folder
 temp_unzip <- paste0(temp_dir, "/dwca-vascan")
 
-## ----set-url------------------------------------------------------------------------------------------------------------------------------
-vascan_url <- "https://data.canadensys.net/ipt/archive.do?r=vascan&v=37.12"
+## ----get-vascan-url-----------------------------------------------------------------------------------------------------------------------
+source(system.file("extdata", "vascan_url.R", package = "dwctaxon"))
+
+# Check that we now have the URL loaded:
+vascan_url
 
 ## ----echo = FALSE, results = "asis"-------------------------------------------------------------------------------------------------------
 # Check if file can be downloaded safely, quit early if not
-# Make sure this URL matches the one in the next chunk
 if (!dwctaxon:::safe_to_download(vascan_url)) {
   cat(
     paste0(
@@ -40,14 +40,28 @@ if (!dwctaxon:::safe_to_download(vascan_url)) {
   knitr::knit_exit()
 }
 
-## ----download-unzip-----------------------------------------------------------------------------------------------------------------------
-# Download data
-download.file(url = vascan_url, destfile = temp_zip, mode = "wb")
+## ----download-unzip-hide, include = FALSE-------------------------------------------------------------------------------------------------
+# Download and unzip data
+download_success <- dwctaxon:::safe_download_unzip(
+  url = vascan_url,
+  destfile = temp_zip,
+  exdir = temp_unzip
+)
 
-# Unzip
-unzip(temp_zip, exdir = temp_unzip)
+# Check if download or unzip failed
+if (!download_success) {
+  message("Zip file could not be loaded. Stopping vignette rendering.")
+  knitr::knit_exit()
+}
 
-# Check the contents of the unzipped data (the Darwin Core Archive)
+## ----download-unzip-show, eval = FALSE----------------------------------------------------------------------------------------------------
+# # Download data
+# download.file(url = vascan_url, destfile = temp_zip, mode = "wb")
+# 
+# # Unzip
+# unzip(temp_zip, exdir = temp_unzip)
+
+## ----list-zip-contents--------------------------------------------------------------------------------------------------------------------
 list.files(temp_unzip)
 
 ## ----load-data----------------------------------------------------------------------------------------------------------------------------
@@ -57,7 +71,9 @@ vascan <- read_tsv(paste0(temp_unzip, "/taxon.txt"))
 vascan
 
 ## ----validation, error = TRUE-------------------------------------------------------------------------------------------------------------
+try({
 dct_validate(vascan)
+})
 
 ## ----validation-summary-------------------------------------------------------------------------------------------------------------------
 validation_res <- dct_validate(vascan, on_fail = "summary")

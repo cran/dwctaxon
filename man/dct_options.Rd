@@ -33,6 +33,7 @@ The arguments that can be set with this function are as follows:
 \item \code{check_mapping_accepted}: Logical vector of length 1; should all values of \code{acceptedNameUsageID} be required to map to the \code{taxonID} of an existing name? Default \code{TRUE}.
 \item \code{check_mapping_original}: Logical vector of length 1; should all values of \code{originalNameUsageID} be required to map to the \code{taxonID} of an existing name? Default \code{TRUE}.
 \item \code{check_mapping_parent}: Logical vector of length 1; should all values of \code{parentNameUsageID} be required to map to the \code{taxonID} of an existing name? Default \code{TRUE}.
+\item \code{check_mapping_parent_accepted}: Logical vector of length 1; should all values of \code{parentNameUsageID} be required to map to the \code{taxonID} of an accepted name? Default \code{FALSE}.
 \item \code{check_sci_name}: Logical vector of length 1; should all instances of \code{scientificName} be required to be non-missing and unique? Default \code{TRUE}.
 \item \code{check_status_diff}: Logical vector of length 1; should each scientific name be allowed to have only one taxonomic status? Default \code{FALSE}.
 \item \code{check_tax_status}: Logical vector of length 1; should all taxonomic names be required to have a valid value for taxonomic status (by default, "accepted", "synonym", or "variant")? Default \code{TRUE}.
@@ -55,8 +56,17 @@ columns they inspect are missing? Default \code{FALSE}.
 \item \code{fill_usage_id}: Logical vector of length 1; if \code{usage_id} is not provided, should values in the acceptedNameUsageID column be filled in by matching acceptedNameUsage to scientificName? If the \code{acceptedNameUsageID} column does not yet exist it will be created. Default \code{TRUE}.
 \item \code{fill_usage_name}: Logical vector of length 1; should the acceptedNameUsage of the selected row be set to the scientificName corresponding to its acceptedNameUsageID? Default \code{TRUE}.
 \item \code{remap_names}: Logical vector of length 1; should the acceptedNameUsageID be updated (remapped) for rows with the same acceptedNameUsageID as the taxonID of the row to be modified? Default \code{TRUE}.
+\item \code{remap_parent}: Logical vector of length 1; should the parentNameUsageID be updated (remapped) to that of its accepted name if it is a synonym? Will also apply to any other rows with the same parentNameUsageID as the taxonID of the row to be modified. Default \code{TRUE}.
 \item \code{remap_variant}: Same as \code{remap_names}, but applies specifically to rows with taxonomicStatus of "variant". Default \code{FALSE}.
 \item \code{stamp_modified}: Logical vector of length 1; should the \code{modified} column of any newly created or modified row include a timestamp with the date and time of its creation/modification? If the \code{modified} column does not yet exist it will be created. Default \code{TRUE}.
+\item \code{stamp_modified_by}: Logical vector of length 1; should the \code{modifiedBy} column of any newly created or modified row include the name of the
+current user? If the \code{modifiedBy} column does not yet exist it will be created; note that
+this is a non-DWC standard column, so \code{"modifiedBy"} is required in
+\code{extra_cols}. The current user can be specified with the \code{user_name} option. Default \code{FALSE}.
+\item \code{stamp_modified_by_id}: Logical vector of length 1; should the \code{modifiedByID} column of any newly created or modified row include the ID of the
+current user? If the \code{modifiedByID} column does not yet exist it will be created; note that
+this is a non-DWC standard column, so \code{"modifiedByID"} is required in
+\code{extra_cols}. The current user ID can be specified with the \code{user_id} option. Default \code{FALSE}.
 \item \code{taxon_id_length}: Numeric vector of length 1; how many characters should be included in automatically generated values of taxonID? Must be between 1 and 32, inclusive. Default \code{32}.
 }
 }
@@ -65,6 +75,8 @@ columns they inspect are missing? Default \code{FALSE}.
 \itemize{
 \item \code{quiet}: Logical vector of length 1; should warnings be silenced? Default \code{FALSE}.
 \item \code{strict}: Logical vector of length 1; should taxonomic checks be run on the updated taxonomic database? Default \code{FALSE}.
+\item \code{user_name}: Character vector of length 1; the name of the current user. Default \code{""}.
+\item \code{user_id}: Character vector of length 1; the ID of the current user. Default \code{""}.
 }
 }
 }
